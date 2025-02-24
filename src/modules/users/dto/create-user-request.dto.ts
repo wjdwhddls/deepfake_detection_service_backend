@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { IsNotEmpty, IsEnum, IsString, Matches, MaxLength, MinLength, IsEmail } from "class-validator";
 import { UserRole } from "../entities/user-role.enum";
 
 export class CreateUserRequestDto {
@@ -13,7 +13,7 @@ export class CreateUserRequestDto {
     @IsString()
     @MinLength(8)
     @MaxLength(20)
-    @Matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, { message: 'Password too weak', }) 
+    @Matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/, { message: 'Password too weak', })  // 대문자, 소문자, 숫자, 특수문자 포함
     password: string;
 
     @IsNotEmpty()
