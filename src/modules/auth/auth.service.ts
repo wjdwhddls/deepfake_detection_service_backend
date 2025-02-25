@@ -16,27 +16,28 @@ export class AuthService {
 
     // Sign-in
     async signIn(signInRequestDto: SignInRequestDto): Promise<string> {
-        this.logger.verbose(`User with email: ${signInRequestDto.email} is signing in`);
+        this.logger.verbose(`User with email: ${signInRequestDto.user_id} is signing in`);
 
-        const { email, password } = signInRequestDto;
+        const { user_id, user_pw } = signInRequestDto;
 
         try {
-            const existingUser = await this.userService.findUserByEmail(email);
+            const existingUser = await this.userService.findUserByEmail(user_id);
 
-            if (!existingUser || !(await bcrypt.compare(password, existingUser.password))) {
+            if (!existingUser || !(await bcrypt.compare(user_pw, existingUser.user_pw))) {
                 throw new UnauthorizedException('Invalid credentials');
             }
 
             // [1] JWT 토큰 생성
             const payload = {
-                id: existingUser.id,
-                email: existingUser.email,
+                id: existingUser.user_id,
                 username: existingUser.username,
-                role: existingUser.role
+                role: existingUser.role,
+                gender: existingUser.gender,
+                tel: existingUser.tel,
             };
             const accessToken = await this.jwtService.sign(payload);
 
-            this.logger.verbose(`User with email: ${signInRequestDto.email} issued JWT ${accessToken}`);
+            this.logger.verbose(`User with email: ${signInRequestDto.user_id} issued JWT ${accessToken}`);
             return accessToken;
         } catch (error) {
             this.logger.error(`Invalid credentials or Internal Server error`);
