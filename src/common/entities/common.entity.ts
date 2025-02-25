@@ -3,10 +3,4 @@ import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from "type
 export abstract class CommonEntity {
     @PrimaryGeneratedColumn()
     id: number;
-
-    @CreateDateColumn({ type: 'timestamp' })
-    createAt: Date;
-
-    @CreateDateColumn({ type: 'timestamp' })
-    updateAt: Date;
 }
