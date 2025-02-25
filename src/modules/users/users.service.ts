@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs'
 import { SearchUserResponseDto } from './dto/search-user-response.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { UpdateUserRequestDto } from './dto/update-user-request.dto';
 
 @Injectable()
 export class UserService {
@@ -53,6 +54,24 @@ export class UserService {
         return existingUser;
     }
 
+    // 사용자 업데이트 메서드  
+    async updateUser(id: number, updateUserRequestDto: UpdateUserRequestDto): Promise<User> {
+        const user = await this.userRepository.findOne({ where: { id } });
+        if (!user) {
+            throw new NotFoundException('User not found');
+        }
+
+        // 사용자 정보 업데이트  
+        user.user_pw = await this.hashPassword(updateUserRequestDto.user_pw); // 비밀번호 해시화  
+        user.username = updateUserRequestDto.username;
+        user.tel = updateUserRequestDto.tel;
+
+        const updatedUser = await this.userRepository.save(user);
+        this.logger.verbose(`${updatedUser.username}님의 정보가 업데이트되었습니다.`);
+
+        return updatedUser; // 업데이트된 사용자 반환  
+    }
+
     // RESET PASSWORD  
     async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<SearchUserResponseDto> {
         const { username, user_id, new_password } = resetPasswordDto;
@@ -68,6 +87,21 @@ export class UserService {
         await this.userRepository.save(existingUser);
 
         return new SearchUserResponseDto(existingUser, '비밀번호가 재설정되었습니다.');
+    }
+
+    // DELETE - by id  
+    async deleteUser(id: number, loggedInUser: User): Promise<void> {
+        this.logger.verbose(`사용자: ${loggedInUser.username}님이 ID ${id}로 사용자를 삭제하려고 합니다.`);
+
+        const foundUser = await this.userRepository.findOne({ where: { id } });
+
+        if (!foundUser) {
+            this.logger.warn(`사용자 삭제 시도 실패: ID ${id}의 사용자를 찾을 수 없습니다.`);
+            throw new NotFoundException('사용자를 찾을 수 없습니다.');
+        }
+
+        await this.userRepository.delete(foundUser.id);
+        this.logger.verbose(`ID ${id}의 사용자가 성공적으로 삭제되었습니다.`);
     }
 
     // Existing Checker
