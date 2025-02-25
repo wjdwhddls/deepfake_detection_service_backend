@@ -89,19 +89,16 @@ export class UserService {
         return new SearchUserResponseDto(existingUser, '비밀번호가 재설정되었습니다.');
     }
 
-    // DELETE - by id  
-    async deleteUser(id: number, loggedInUser: User): Promise<void> {
-        this.logger.verbose(`사용자: ${loggedInUser.username}님이 ID ${id}로 사용자를 삭제하려고 합니다.`);
+    async deleteUser(userId: number): Promise<boolean> {  
+        const user = await this.userRepository.findOne({ where: { id: userId } });  
+        
+        if (!user) {  
+            // 사용자가 존재하지 않는 경우  
+            throw new NotFoundException(`ID ${userId}에 해당하는 사용자가 존재하지 않습니다.`);  
+        }  
 
-        const foundUser = await this.userRepository.findOne({ where: { id } });
-
-        if (!foundUser) {
-            this.logger.warn(`사용자 삭제 시도 실패: ID ${id}의 사용자를 찾을 수 없습니다.`);
-            throw new NotFoundException('사용자를 찾을 수 없습니다.');
-        }
-
-        await this.userRepository.delete(foundUser.id);
-        this.logger.verbose(`ID ${id}의 사용자가 성공적으로 삭제되었습니다.`);
+        await this.userRepository.remove(user); // 관련 정보 삭제  
+        return true; // 삭제 성공  
     }
 
     // Existing Checker

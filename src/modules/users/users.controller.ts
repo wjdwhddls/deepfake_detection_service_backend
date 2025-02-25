@@ -38,13 +38,19 @@ export class UserController {
     return this.userService.resetPassword(resetPasswordDto);
   }
 
-  // Delete user by id  
-  @Delete(':id')
-  async deleteUser(@Param('id') id: string, @GetUser() loggedInUser: User): Promise<void> {
-    const userId = parseInt(id, 10); // 문자열을 숫자로 변환  
-    this.logger.verbose(`사용자: ${loggedInUser.username}님이 ID ${userId}로 사용자를 삭제하려고 합니다.`); // 로깅 추가  
+  // DELETE  
+  @Delete('/:id')
+  async deleteUser(@Body('id') userId: number): Promise<ApiResponseDto<void>> {
+    this.logger.verbose(`사용자가 계정을 삭제하려고 합니다: ${userId}`);
 
-    // 사용자 삭제 서비스 호출  
-    await this.userService.deleteUser(userId, loggedInUser);
+    const result = await this.userService.deleteUser(userId);
+
+    if (result) {
+      this.logger.verbose(`ID ${userId}에 해당하는 계정이 성공적으로 삭제되었습니다.`);
+      return new ApiResponseDto(true, 200, '사용자가 성공적으로 삭제되었습니다.');
+    } else {
+      this.logger.warn(`ID ${userId}에 해당하는 계정을 찾을 수 없습니다.`);
+      return new ApiResponseDto(false, 404, '사용자가 존재하지 않습니다.');
+    }
   }
 }
