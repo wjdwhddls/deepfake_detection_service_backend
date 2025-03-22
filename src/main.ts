@@ -6,7 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);  
 
   app.enableCors({  
-    origin: 'http://localhost:4200', 
+    origin: true, // 모든 출처 허용
     credentials: true,  
     exposedHeaders: ['Authorization'],
   });  

@@ -16,7 +16,7 @@ export class FilesService {
     const result = await this.runModel(filePath);  
     
     // 결과 반환  
-    return result;  
+    return { result };  
   }  
 
   async runModel(filePath: string): Promise<any> {  
