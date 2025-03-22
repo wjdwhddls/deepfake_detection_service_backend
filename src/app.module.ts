@@ -7,13 +7,15 @@ import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { UnauthorizedExceptionFilter } from './common/filters/unauthorization.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { UserModule } from './modules/users/users.module';
+import { FilesModule } from './modules/files/files.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
     ArticlesModule,
     AuthModule,
-    UserModule
+    UserModule,
+    FilesModule
   ],
   providers: [
     {
