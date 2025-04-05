@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany } from "typeorm";
 import { UserRole } from "./user-role.enum";
-import { Article } from "src/modules/articles/entities/article.entity";
+import { Dashboard } from "src/modules/dashboard/entities/dashboard.entity";
 import { CommonEntity } from "src/common/entities/common.entity";
 import { UserGender } from "./user-gender.enum";
 
@@ -24,6 +24,6 @@ export class User extends CommonEntity {
     @Column()
     role: UserRole;
 
-    @OneToMany(Type => Article, article => article.author, { eager: false })
-    articles: Article[];
+    @OneToMany(Type => Dashboard, dashboard => dashboard.USER_ID, { eager: false })
+    dashboard: Dashboard[];
 }

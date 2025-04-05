@@ -1,5 +1,5 @@
 import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
-import { ArticleStatus } from 'src/modules/articles/entities/article-status.enum';
+import { ArticleStatus } from 'src/modules/dashboard/entities/dashboard-status.enum';
 
 @Injectable()
 export class ArticleStatusValidationPipe implements PipeTransform {

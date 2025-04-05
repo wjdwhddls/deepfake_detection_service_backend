@@ -1,4 +1,4 @@
-export enum ArticleStatus {
+export enum DashboardStatus {
     PUBLIC = 'PUBLIC',
     PRIVATE = 'PRIVATE',
 }

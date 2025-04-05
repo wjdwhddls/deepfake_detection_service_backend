@@ -1,5 +1,5 @@
 import { Module, ValidationPipe } from '@nestjs/common';
-import { ArticlesModule } from './modules/articles/articles.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './configs/typeorm.config';
 import { AuthModule } from './modules/auth/auth.module';
@@ -12,7 +12,7 @@ import { FilesModule } from './modules/files/files.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
-    ArticlesModule,
+    DashboardModule,
     AuthModule,
     UserModule,
     FilesModule
@@ -27,9 +27,9 @@ import { FilesModule } from './modules/files/files.module';
       useClass: LoggingInterceptor,
     },
     {
-        provide: APP_PIPE,
-        useClass: ValidationPipe,
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
     },
   ]
 })
-export class AppModule {}
+export class AppModule { }
