@@ -4,7 +4,6 @@ import { CreateDashboardRequestDto } from './dto/create-dashboard-request.dto';
 import { DashboardResponseDto } from './dto/dashboard-response.dto';
 import { SearchDashboardResponseDto } from './dto/search-dashboard-response.dto';
 import { UpdateDashboardRequestDto } from './dto/update-dashboard-request.dto';
-import { DashboardStatus } from './entities/dashboard-status.enum';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from 'src/modules/auth/custom-guards-decorators/custom-role.guard';
 import { UserRole } from 'src/modules/users/entities/user-role.enum';

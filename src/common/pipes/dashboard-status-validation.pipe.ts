@@ -1,12 +1,12 @@
 import { PipeTransform, Injectable, ArgumentMetadata, BadRequestException } from '@nestjs/common';
-import { ArticleStatus } from 'src/modules/dashboard/entities/dashboard-status.enum';
+import { DashboardStatus } from 'src/modules/dashboard/entities/dashboard-status.enum';
 
 @Injectable()
-export class ArticleStatusValidationPipe implements PipeTransform {
+export class DashboardStatusValidationPipe implements PipeTransform {
 
     private statusOptions = [
-        ArticleStatus.PRIVATE,
-        ArticleStatus.PUBLIC
+        DashboardStatus.PRIVATE,
+        DashboardStatus.PUBLIC
     ]
 
     transform(value: any, metadata: ArgumentMetadata) {
@@ -24,6 +24,6 @@ export class ArticleStatusValidationPipe implements PipeTransform {
     }
 
     private isStatusValid(status: string): boolean {
-        return this.statusOptions.includes(status as ArticleStatus);
+        return this.statusOptions.includes(status as DashboardStatus);
     }
 }

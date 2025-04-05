@@ -6,7 +6,7 @@ export class SearchDashboardResponseDto {
     contents: string;
 
     constructor(dashboard: Dashboard) {
-        this.author = dashboard.POST_ID;
+        this.author = dashboard.id;
         this.title = dashboard.TITLE;
         this.contents = dashboard.TEXT;
 

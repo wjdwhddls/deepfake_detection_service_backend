@@ -11,7 +11,7 @@ export class DashboardResponseDto {
     // user: UserResponseDto;
 
     constructor(dashboard: Dashboard) {
-        this.id = dashboard.POST_ID;
+        this.id = dashboard.id;
         this.author = dashboard.USER_ID;
         this.title = dashboard.TITLE;
         this.contents = dashboard.TEXT;

@@ -4,9 +4,6 @@ import { CommonEntity } from "src/common/entities/common.entity";
 
 @Entity()
 export class Dashboard extends CommonEntity {
-    @PrimaryGeneratedColumn()
-    POST_ID: number;
-
     @Column({ name: 'USER_ID' })
     USER_ID: number;
 
