@@ -25,7 +25,7 @@ export class DashboardsController {
     async createDashboard(
         @Body() createDashboardRequestDto: CreateDashboardRequestDto,
         @GetUser() logginedUser: User): Promise<ApiResponseDto<void>> {
-        this.logger.verbose(`User: ${logginedUser.username} is try to creating a new article with title: ${createDashboardRequestDto.title}`);
+        this.logger.verbose(`User: ${logginedUser.username} is try to creating a new dashboard with title: ${createDashboardRequestDto.title}`);
 
         await this.dashboardService.createDashboard(createDashboardRequestDto, logginedUser)
 
@@ -35,12 +35,12 @@ export class DashboardsController {
 
     // READ - 전체 게시글 보기
     @Get('/')
-    @Roles(UserRole.USER)
+    @Roles(UserRole.USER, UserRole.ADMIN)
     async getAllDashboards(): Promise<ApiResponseDto<DashboardResponseDto[]>> {
         this.logger.verbose(`Try to Retrieving all Dashboards`);
 
         const dashboard: Dashboard[] = await this.dashboardService.getAllDashboard();
-        const dashboardResponseDto = dashboard.map(article => new DashboardResponseDto(article));
+        const dashboardResponseDto = dashboard.map(dashboard => new DashboardResponseDto(dashboard));
 
         this.logger.verbose(`Retrieved all dashboard list Successfully`);
         return new ApiResponseDto(true, HttpStatus.OK, 'Dashboard list retrive Successfully', dashboardResponseDto);
@@ -52,7 +52,7 @@ export class DashboardsController {
         this.logger.verbose(`Try to Retrieving ${logginedUser.username}'s all Dashboards`);
 
         const dashboard: Dashboard[] = await this.dashboardService.getMyAllDashboard(logginedUser);
-        const dashboardResponseDto = dashboard.map(article => new DashboardResponseDto(article));
+        const dashboardResponseDto = dashboard.map(dashboard => new DashboardResponseDto(dashboard));
 
         this.logger.verbose(`Retrieved ${logginedUser.username}'s all Dashboards list Successfully`);
         return new ApiResponseDto(true, HttpStatus.OK, 'Dashboard list retrive Successfully', dashboardResponseDto);
@@ -61,21 +61,21 @@ export class DashboardsController {
     // READ - 특정 게시물 보기
     @Get('/:id/detail')
     async getDashboardDetailById(@Param('id') id: number): Promise<ApiResponseDto<DashboardResponseDto>> {
-        this.logger.verbose(`Try to Retrieving a article by id: ${id}`);
+        this.logger.verbose(`Try to Retrieving a dashboard by id: ${id}`);
 
-        const articleResponseDto = new DashboardResponseDto(await this.dashboardService.getDashboardDetailById(id));
+        const dashboardResponseDto = new DashboardResponseDto(await this.dashboardService.getDashboardDetailById(id));
 
-        this.logger.verbose(`Retrieved a article by ${id} details Successfully`);
-        return new ApiResponseDto(true, HttpStatus.OK, 'Dashboard retrive Successfully', articleResponseDto);
+        this.logger.verbose(`Retrieved a dashboard by ${id} details Successfully`);
+        return new ApiResponseDto(true, HttpStatus.OK, 'Dashboard retrive Successfully', dashboardResponseDto);
     }
 
     // READ - 게시글 검색
     @Get('/search')
     async getDashboardsByKeyword(@Query('keyword') author: string): Promise<ApiResponseDto<SearchDashboardResponseDto[]>> {
-        this.logger.verbose(`Try to Retrieving a article by author: ${author}`);
+        this.logger.verbose(`Try to Retrieving a dashboard by author: ${author}`);
 
         const dashboard: Dashboard[] = await this.dashboardService.getDashboardByKeyword(author);
-        const dashboardResponseDto = dashboard.map(article => new SearchDashboardResponseDto(article));
+        const dashboardResponseDto = dashboard.map(dashboard => new SearchDashboardResponseDto(dashboard));
 
         this.logger.verbose(`Retrieved dashboard list by ${author} Successfully`);
         return new ApiResponseDto(true, HttpStatus.OK, 'Dashboard list retrive Successfully', dashboardResponseDto);
@@ -86,11 +86,11 @@ export class DashboardsController {
     async updateDashboardById(
         @Param('id') id: number,
         @Body() updateDashboardRequestDto: UpdateDashboardRequestDto): Promise<ApiResponseDto<void>> {
-        this.logger.verbose(`Try to Updating a article by id: ${id} with updateDashboardRequestDto`);
+        this.logger.verbose(`Try to Updating a dashboard by id: ${id} with updateDashboardRequestDto`);
 
         await this.dashboardService.updateDashboardById(id, updateDashboardRequestDto)
 
-        this.logger.verbose(`Updated a article by ${id} Successfully`);
+        this.logger.verbose(`Updated a dashboard by ${id} Successfully`);
         return new ApiResponseDto(true, HttpStatus.NO_CONTENT, 'Dashboard update Successfully');
     }
 
@@ -98,11 +98,11 @@ export class DashboardsController {
     @Delete('/:id')
     @Roles(UserRole.USER, UserRole.ADMIN)
     async deleteDashboardById(@Param('id') id: number, @GetUser() logginedUser: User): Promise<ApiResponseDto<void>> {
-        this.logger.verbose(`User: ${logginedUser.username} is trying to Deleting a article by id: ${id}`);
+        this.logger.verbose(`User: ${logginedUser.username} is trying to Deleting a dashboard by id: ${id}`);
 
         await this.dashboardService.deleteDashboardById(id, logginedUser);
 
-        this.logger.verbose(`Deleted a article by id: ${id} Successfully`);
+        this.logger.verbose(`Deleted a dashboard by id: ${id} Successfully`);
         return new ApiResponseDto(true, HttpStatus.NO_CONTENT, 'Dashboard delete Successfully');
     }
 }
