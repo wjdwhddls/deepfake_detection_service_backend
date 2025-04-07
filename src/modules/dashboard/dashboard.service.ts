@@ -65,7 +65,7 @@ export class DashboardService {
 
         const foundDashboard = await this.dashboardRepository.createQueryBuilder('dashboard')
             .leftJoinAndSelect('dashboard.user', 'user')
-            .where('dashboard.POST_ID = :id', { id })
+            .where('dashboard.id = :id', { id })
             .getOne();
 
         if (!foundDashboard) {
