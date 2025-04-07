@@ -3,7 +3,7 @@ import { Dashboard } from "../entities/dashboard.entity";
 
 export class DashboardResponseDto {
     id: number;
-    author: number;
+    author: string;
     title: string;
     contents: string;
     date: Date;

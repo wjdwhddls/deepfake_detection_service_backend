@@ -105,4 +105,15 @@ export class DashboardsController {
         this.logger.verbose(`Deleted a dashboard by id: ${id} Successfully`);
         return new ApiResponseDto(true, HttpStatus.NO_CONTENT, 'Dashboard delete Successfully');
     }
+
+    // 좋아요 추가/제거 핸들러
+    @Post(':id/like')
+    async likePost(
+        @Param('id') id: number, // 게시물 ID
+        @Body('liked') liked: boolean, // 좋아요 상태
+        @GetUser() loggedInUser: User // 현재 로그인한 사용자
+    ): Promise<ApiResponseDto<void>> {
+        await this.dashboardService.updateLike(id, liked, loggedInUser); // 서비스 호출
+        return new ApiResponseDto(true, HttpStatus.OK, `Post ${liked ? 'liked' : 'unliked'} successfully`);
+    }
 }

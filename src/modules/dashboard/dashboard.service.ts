@@ -127,4 +127,24 @@ export class DashboardService {
 
         this.logger.verbose(`ID ${id}의 대시보드를 성공적으로 삭제하였습니다.`);
     }
+
+    // 좋아요 수 업데이트
+    async updateLike(postId: number, liked: boolean, loggedInUser: User): Promise<void> {
+        this.logger.verbose(`User: ${loggedInUser.username} is trying to ${liked ? 'like' : 'unlike'} the post with ID: ${postId}`);
+
+        const post = await this.dashboardRepository.findOne({ where: { id: postId } });
+        if (!post) {
+            throw new NotFoundException('게시물을 찾을 수 없습니다.'); // 게시물이 존재하지 않는 경우 예외 처리
+        }
+
+        if (liked) {
+            post.LIKE_NUM += 1; // 좋아요 수 증가
+        } else {
+            post.LIKE_NUM = Math.max(post.LIKE_NUM - 1, 0); // 좋아요 수 감소 (0보다 작지 않도록 처리)
+        }
+
+        await this.dashboardRepository.save(post); // 변경 사항 저장 
+
+        this.logger.verbose(`Post with ID: ${postId} has been ${liked ? 'liked' : 'unliked'}. Current likes: ${post.LIKE_NUM}`);
+    }
 }
