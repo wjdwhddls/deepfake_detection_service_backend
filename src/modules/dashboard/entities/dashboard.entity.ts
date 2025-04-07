@@ -5,7 +5,7 @@ import { CommonEntity } from "src/common/entities/common.entity";
 @Entity()
 export class Dashboard extends CommonEntity {
     @Column({ name: 'USER_ID' })
-    USER_ID: number;
+    USER_ID: string;
 
     @Column({ length: 255 })
     TITLE: string;
