@@ -8,6 +8,7 @@ import { UnauthorizedExceptionFilter } from './common/filters/unauthorization.fi
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { UserModule } from './modules/users/users.module';
 import { FilesModule } from './modules/files/files.module';
+import { AudioGate } from './modules/audio/audiogate';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { FilesModule } from './modules/files/files.module';
       provide: APP_PIPE,
       useClass: ValidationPipe,
     },
+    AudioGate
   ]
 })
 export class AppModule { }

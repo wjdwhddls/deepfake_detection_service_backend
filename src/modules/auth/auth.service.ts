@@ -15,7 +15,7 @@ export class AuthService {
     ) { }
 
     // Sign-in
-    async signIn(signInRequestDto: SignInRequestDto): Promise<string> {
+    async signIn(signInRequestDto: SignInRequestDto): Promise<{ accessToken: string, phoneNumber: string | null }> {
         this.logger.verbose(`User with email: ${signInRequestDto.user_id} is signing in`);
 
         const { user_id, user_pw } = signInRequestDto;
@@ -38,7 +38,7 @@ export class AuthService {
             const accessToken = await this.jwtService.sign(payload);
 
             this.logger.verbose(`User with email: ${signInRequestDto.user_id} issued JWT ${accessToken}`);
-            return accessToken;
+            return {accessToken, phoneNumber: existingUser.tel};
         } catch (error) {
             this.logger.error(`Invalid credentials or Internal Server error`);
             throw error;

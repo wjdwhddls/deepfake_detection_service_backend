@@ -26,4 +26,5 @@ export class User extends CommonEntity {
 
     @OneToMany(Type => Dashboard, dashboard => dashboard.USER_ID, { eager: false })
     dashboard: Dashboard[];
+    static tel: string | null;
 }

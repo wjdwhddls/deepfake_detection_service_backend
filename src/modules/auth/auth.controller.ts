@@ -15,13 +15,14 @@ export class AuthController {
     async signIn(@Body() signInRequestDto: SignInRequestDto, @Res() res:Response): Promise<void> {
         this.logger.verbose(`User with email: ${signInRequestDto.user_id} is try to signing in`);
 
-        const accessToken = await this.authService.signIn(signInRequestDto);
+        const { accessToken, phoneNumber } = await this.authService.signIn(signInRequestDto);
 
         this.logger.verbose(`User with email: ${signInRequestDto.user_id} issued JWT ${accessToken}`);
 
         // [2] JWT를 헤더에 저장 후 ApiResponse를 바디에 담아서 전송
         res.setHeader('Authorization', accessToken);
-        const response = new ApiResponseDto(true, 200, 'User logged in successfully', { accessToken });
+        
+        const response = new ApiResponseDto(true, 200, 'User logged in successfully', { accessToken, phoneNumber });
 
         res.send(response);
     }
