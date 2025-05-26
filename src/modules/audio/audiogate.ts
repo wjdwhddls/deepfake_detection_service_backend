@@ -91,15 +91,15 @@ export class AudioGate implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  // AudioGate.ts
   @SubscribeMessage('hangup')
   handleHangup(@MessageBody() data: { to: string; from: string }, @ConnectedSocket() client: Socket): void {
     const toSocketId = this.userSocketMap.get(data.to);
     if (toSocketId) {
       this.server.to(toSocketId).emit('call-ended');
-      console.log(`[HANGUP] from=${data.from} → to=${data.to} (${toSocketId})`);
+      this.server.to(client.id).emit('call-ended'); // ← 발신자도 처리되도록 추가
+      console.log(`[HANGUP] from=${data.from} → to=${data.to}`);
     } else {
-      console.log(`[HANGUP_FAIL] 대상자 미접속: to=${data.to}`);
+      console.log(`[HANGUP_FAIL] 대상 미접속: to=${data.to}`);
     }
   }
 }
