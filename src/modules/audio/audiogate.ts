@@ -90,4 +90,16 @@ export class AudioGate implements OnGatewayConnection, OnGatewayDisconnect {
       console.log(`[ICE_FAIL] 대상자 미접속: to = ${data.to} (from = ${data.from}), 현재 연결된 소켓ID 없음`);
     }
   }
+
+  // AudioGate.ts
+  @SubscribeMessage('hangup')
+  handleHangup(@MessageBody() data: { to: string; from: string }, @ConnectedSocket() client: Socket): void {
+    const toSocketId = this.userSocketMap.get(data.to);
+    if (toSocketId) {
+      this.server.to(toSocketId).emit('call-ended');
+      console.log(`[HANGUP] from=${data.from} → to=${data.to} (${toSocketId})`);
+    } else {
+      console.log(`[HANGUP_FAIL] 대상자 미접속: to=${data.to}`);
+    }
+  }
 }
