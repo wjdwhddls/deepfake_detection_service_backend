@@ -46,7 +46,6 @@ export class AudioGate implements OnGatewayConnection, OnGatewayDisconnect {
     const toSocketId = this.userSocketMap.get(data.to);
     const fromSocketId = client.id;
     if (toSocketId) {
-      // 수신자에게 통화 요청 전송
       this.server.to(toSocketId).emit('call', {
         from: fromSocketId,
         number: data.number,
@@ -54,7 +53,6 @@ export class AudioGate implements OnGatewayConnection, OnGatewayDisconnect {
       });
       console.log(`[CALL] 발신: from = ${data.from} (소켓ID: ${fromSocketId}) → to = ${data.to} (소켓ID: ${toSocketId})`);
 
-      // 발신자에게 수신자의 socketId 전달
       this.server.to(fromSocketId).emit('call-ack', {
         toSocketId,
       });
@@ -68,9 +66,16 @@ export class AudioGate implements OnGatewayConnection, OnGatewayDisconnect {
   handleOffer(@MessageBody() data: OfferData, @ConnectedSocket() client: Socket): void {
     const toSocketId = data.to;
     const fromSocketId = client.id;
+    console.log(`[OFFER_REQ] 데이터 수신: from=${fromSocketId}, to=${toSocketId}`);
     if (toSocketId) {
-      this.server.to(toSocketId).emit('offer', { offer: data.offer, from: fromSocketId });
-      console.log(`[OFFER] from = ${fromSocketId} → to = ${toSocketId}`);
+      // 📌 OFFER 전송을 지연시켜 수신자의 핸들러 등록 시간을 확보
+      setTimeout(() => {
+        this.server.to(toSocketId).emit('offer', {
+          offer: data.offer,
+          from: fromSocketId,
+        });
+        console.log(`[OFFER] from = ${fromSocketId} → to = ${toSocketId}`);
+      }, 300); // 300ms 지연
     } else {
       console.log(`[OFFER_FAIL] 대상자 소켓ID 없음: to = ${data.to}`);
     }
@@ -80,6 +85,7 @@ export class AudioGate implements OnGatewayConnection, OnGatewayDisconnect {
   handleAnswer(@MessageBody() data: AnswerData, @ConnectedSocket() client: Socket): void {
     const toSocketId = data.to;
     const fromSocketId = client.id;
+    console.log(`[ANSWER_REQ] 데이터 수신: from=${fromSocketId}, to=${toSocketId}`);
     if (toSocketId) {
       this.server.to(toSocketId).emit('answer', { answer: data.answer, from: fromSocketId });
       console.log(`[ANSWER] from = ${fromSocketId} → to = ${toSocketId}`);
@@ -105,7 +111,7 @@ export class AudioGate implements OnGatewayConnection, OnGatewayDisconnect {
     const toSocketId = this.userSocketMap.get(data.to);
     if (toSocketId) {
       this.server.to(toSocketId).emit('call-ended');
-      this.server.to(client.id).emit('call-ended'); // ← 발신자도 처리되도록 추가
+      this.server.to(client.id).emit('call-ended');
       console.log(`[HANGUP] from=${data.from} → to=${data.to}`);
     } else {
       console.log(`[HANGUP_FAIL] 대상 미접속: to=${data.to}`);
